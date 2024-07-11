@@ -5,5 +5,7 @@ curl -k -s -X "GET" \
   -H "X-XSRF-Header: PingFederate" \
   --user "administrator:2FederateM0re" | jq -r > data.json
 
-kubectl delete configmap pingfederate-data
-kubectl create configmap pingfederate-data --from-file=data.json
+POD_NAME=$(kubectl get pod -l app.kubernetes.io/name=pingfederate-admin -o jsonpath="{.items[0].metadata.name}")
+kubectl cp "${POD_NAME}":/opt/out/instance/server/default/data/pf.jwk pf.jwk
+
+kubectl apply -k .

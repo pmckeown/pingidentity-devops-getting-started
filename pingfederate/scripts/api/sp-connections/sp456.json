@@ -1,9 +1,9 @@
 {
   "type": "SP",
-  "name": "sp123",
-  "id": "sp123",
-  "entityId": "sp123",
-  "active": true,
+  "name": "sp456",
+  "id": "sp456",
+  "entityId": "sp456",
+  "active": false,
   "contactInfo": {},
   "baseUrl": "https://demo-pingfederate-engine.pingdemo.example",
   "loggingMode": "STANDARD",
@@ -25,7 +25,7 @@
   "replicationStatus": "REPLICATED",
   "wsTrust": {
     "partnerServiceIds": [
-      "localhost:default:sp123"
+      "localhost:default:sp456"
     ],
     "oAuthAssertionProfiles": true,
     "defaultTokenType": "SAML20",

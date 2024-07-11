@@ -5,5 +5,6 @@ curl -k -s -X "GET" \
   -H "X-XSRF-Header: PingAccess" \
   --user "administrator:2FederateM0re" | jq -r > data.json
 
-kubectl delete configmap pingaccess-data
-kubectl create configmap pingaccess-data --from-file=data.json
+kubectl cp demo-pingaccess-admin-0:/opt/out/instance/conf/pa.jwk -c pingaccess-admin pa.jwk
+
+kubectl apply -k .
