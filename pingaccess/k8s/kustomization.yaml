@@ -1,0 +1,16 @@
+generatorOptions:
+  disableNameSuffixHash: true
+
+configMapGenerator:
+- name: pingaccess-data
+  namespace: ping
+  files:
+    - data.json
+  literals:
+    - IMPORT_DATA=true
+
+secretGenerator:
+- name: pingaccess-jwk
+  namespace: ping
+  files:
+    - pa.jwk
