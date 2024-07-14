@@ -3,6 +3,31 @@
 #
 ############################################################
 
+global:
+  workload:
+    statefulSet:
+      persistentvolume:
+        enabled: true
+        volumes:
+#          out-dir:
+#            mountPath: /opt/out
+#            persistentVolumeClaim:
+#              accessModes:
+#                - ReadWriteOnce
+#              storageClassName:
+#              resources:
+#                requests:
+#                  storage: 4Gi
+          backup-dir:
+            mountPath: /opt/backup
+            persistentVolumeClaim:
+              accessModes:
+                - ReadWriteOnce
+              storageClassName:
+              resources:
+                requests:
+                  storage: 4Gi
+
 pingaccess-admin:
   image:
     tag: dataimport
@@ -45,6 +70,8 @@ pingauthorize:
     SERVER_PROFILE_PATH: baseline/pingauthorize
 
 pingdirectory:
+  image:
+    tag: dataimport
   enabled: true
   envs:
     SERVER_PROFILE_URL: https://github.com/pingidentity/pingidentity-server-profiles.git

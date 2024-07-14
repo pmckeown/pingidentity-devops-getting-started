@@ -1,0 +1,47 @@
+#!/usr/bin/env sh
+#
+# Ping Identity DevOps - Docker Build Hooks
+#
+#- This script is started in the background immediately before
+#- the server within the container is started
+#-
+#- This is useful to implement any logic that needs to occur after the
+#- server is up and running
+#-
+#- For example, enabling replication in PingDirectory, initializing Sync
+#- Pipes in PingDataSync or issuing admin API calls to PingFederate or PingAccess
+#set -x
+# Check for presence of control flag.  If missing or false, then exit early and don't import
+if [ -d /opt/out/instance/db/changelog/ ]; then
+  echo "Skipping data restore process as DB is present"
+  exit 0
+else
+  echo "Enabling data restore!"
+  export FORCE_USER_ROOT_RESTORE=true
+  export FORCE_CHANGELOG_RESTORE=true
+  export FORCE_SCHEMA_RESTORE=true
+fi
+
+exit 0
+
+# Fresh server has 20038 entries
+ldapsearch --bindDN "cn=administrator" --bindPassword 2FederateM0re --baseDN dc=example,dc=com "(objectclass=*)"
+
+ldapmodify --bindDN "cn=administrator" --bindPassword 2FederateM0re
+dn:uid=user.4,ou=people,dc=example,dc=com
+changetype: delete
+
+import-ldif --task --hostname "${HOSTNAME}" --port "${LDAP_PORT}" \
+    --bindDN "cn=administrator" --bindPassword 2FederateM0re \
+    --ldifFile /opt/backup/userRoot.ldif --backendID userRoot
+
+export-ldif --task --hostname "${HOSTNAME}" --port "${LDAP_PORT}" \
+  --bindDN "cn=administrator" --bindPassword 2FederateM0re \
+  --ldifFile /tmp/currentUserRoot.ldif --backendID userRoot
+
+ldif-diff --sourceLDIF /tmp/currentUserRoot.ldif --targetLDIF /opt/backup/userRoot.ldif \
+   --outputLDIF /tmp/modify.ldif --includeOperationalAttributes --excludeNoUserModificationAttributes \
+   --nonReversibleModifications
+
+ldapmodify --bindDN "cn=administrator" --bindPassword 2FederateM0re \
+

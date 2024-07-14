@@ -1,0 +1,23 @@
+#!/usr/bin/env sh
+exit 0
+echo "Optionally running restore"
+
+env | grep FORCE
+
+if [[ "${FORCE_SCHEMA_RESTORE}" -eq "true" ]]; then
+  restore --task --hostname "${HOSTNAME}" --port "${LDAP_PORT}" \
+    --bindDN "cn=administrator" --bindPassword 2FederateM0re \
+    --backupDirectory /opt/backup/changelog
+fi
+if [[ "${FORCE_USER_ROOT_RESTORE}" -eq "true" ]]; then
+  restore --task --hostname "${HOSTNAME}" --port "${LDAP_PORT}" \
+    --bindDN "cn=administrator" --bindPassword 2FederateM0re \
+    --backupDirectory /opt/backup/userRoot
+fi
+if [[ "${FORCE_CHANGELOG_RESTORE}" -eq "true" ]]; then
+  restore --task --hostname "${HOSTNAME}" --port "${LDAP_PORT}" \
+    --bindDN "cn=administrator" --bindPassword 2FederateM0re \
+    --backupDirectory /opt/backup/changelog
+fi
+
+exit 0
